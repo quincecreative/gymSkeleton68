@@ -84,10 +84,48 @@
         box-shadow: #d6d6e7 0 3px 7px inset;
         transform: translateY(2px);
       }
+
+      #loader-container {
+        position: absolute;
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        align-items: center;
+        justify-content: center;
+        background-color: aliceblue;
+        z-index: 100;
+      }
+
+      .loader {
+        width: 50px;
+        height: 50px;
+        position: relative;
+      }
+      /* Spinner Animation */
+
+      .spinner {
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
 
   <body>
+    <div id="loader-container">
+      <div class="loader spinner"></div>
+    </div>
+
     <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
     <button id="skelleton">Skeleton</button>
     <script>
@@ -164,6 +202,7 @@
 
         let skelletonOn = true;
         let skelleton = null;
+        let skelleton1 = null;
 
         document
           .getElementById("skelleton")
@@ -177,8 +216,10 @@
           for (let i = 0; i < skelleton.length; i++) {
             if (!skelletonOn) {
               skelleton[i].visibility = 0;
+              skelleton1[i].visibility = 0;
             } else {
               skelleton[i].visibility = 1;
+              skelleton1[i].visibility = 1;
             }
           }
         }
@@ -215,6 +256,7 @@
         );
 
         let body = null;
+        let body1 = null;
 
         BABYLON.SceneLoader.ImportMesh(
           "",
@@ -306,7 +348,7 @@
             }
             shadowGenerator.addShadowCaster(meshes[0]);
             meshes[0].receiveShadows = true;
-            body = meshes;
+            body1 = meshes;
           }
         );
 
@@ -331,7 +373,7 @@
 
             console.log(animationGroups);
 
-            skelleton = meshes;
+            skelleton1 = meshes;
           }
         );
 
@@ -348,6 +390,17 @@
           }
         );
         let t = 0;
+        scene.onBeforeRenderObservable.add(() => {
+          t++;
+          if (
+            skelleton != null &&
+            skelleton1 != null &&
+            body != null &&
+            body1 != null
+          ) {
+            document.getElementById("loader-container").style.display = "none";
+          }
+        });
 
         return scene;
       };
