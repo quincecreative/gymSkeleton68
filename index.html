@@ -391,14 +391,17 @@
         );
         let t = 0;
         scene.onBeforeRenderObservable.add(() => {
-          t++;
+         
           if (
             skelleton != null &&
             skelleton1 != null &&
             body != null &&
             body1 != null
           ) {
+             t++;
+            if(t==20){
             document.getElementById("loader-container").style.display = "none";
+            }
           }
         });
 
